@@ -56,30 +56,34 @@ pipeline{
             steps{
                 script{
                     def node_version = sh(script: "node -p \"require('./package.json').version\"", returnStdout: true).trim()
-                    echo "$node_version"
+                    echo " printing nodeversion ${node_version}"
+                     def packageJSON = readJSON file: 'package.json'
+                     def packageJSONVersion = packageJSON.version
                     sh"""
                         npm install
                     """
+                    echo "printing packagejson ${packageJSONVersion}"
                 }
             }
         }
 
 
         // Package Deployable Artifact & Publish To ECR Storage Repository
-        stage ('Package & Publish') {
-            steps{
+        // stage ('Package & Publish') {
+        //     steps{
 
-                script{
-                    APP_TAG = "${node_version}-${env.BUILD_NUMBER}"
-                    app = docker.build("$IMAGE:$APP_TAG")
-                    sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${AWS_Account_URL}'
-                    docker.withRegistry("${ECR_Repository_URL}/gh-hello-node") {
-                    // docker.withRegistry("https://842092678711.dkr.ecr.eu-west-1.amazonaws.com/gh-terra-name-match-service"){
-                    app.push("$APP_TAG")
-                    }
-                }
-                }
-        }
+        //         script{
+        //             def app_version = sh(script: "node -p \"require('./package.json').version\"", returnStdout: true).trim()
+        //             APP_TAG = "${app_version}-${env.BUILD_NUMBER}"
+        //             app = docker.build("$IMAGE:$APP_TAG")
+        //             sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${AWS_Account_URL}'
+        //             docker.withRegistry("${ECR_Repository_URL}/gh-hello-node") {
+        //             // docker.withRegistry("https://842092678711.dkr.ecr.eu-west-1.amazonaws.com/gh-terra-name-match-service"){
+        //             app.push("$APP_TAG")
+        //             }
+        //         }
+        //         }
+        // }
     }
 
 
