@@ -49,7 +49,7 @@ pipeline{
                 // def sonarScanner = tool name: "${SonarQube_Server_Name}"
                 def scannerHome = tool 'sonarscan';
                 withSonarQubeEnv('eTranzact GH Sonarqube Server') {
-                    sh "${scannerHome}/bin/sonar-scanner sonar:sonar"
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
         }
