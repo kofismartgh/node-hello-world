@@ -55,6 +55,8 @@ pipeline{
         stage("Build Artifact & Run Unit Test Cases"){
             steps{
                 script{
+                    def node_version = sh(script: "node -p \"require('./package.json').version\"", returnStdout: true).trim()
+                    echo "$node_version"
                     sh"""
                         npm install
                     """
@@ -68,6 +70,7 @@ pipeline{
             steps{
 
                 script{
+                    echo "$node_version"
                     app = docker.build("$IMAGE:$TAG")
                     sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${AWS_Account_URL}'
                     docker.withRegistry("${ECR_Repository_URL}/gh-hello-node") {
