@@ -1,0 +1,100 @@
+pipeline{
+
+    agent any
+    // tools {nodejs "Nodejs"}
+
+    options {
+        timestamps()
+        timeout(time:20, unit:'MINUTES')
+
+        office365ConnectorWebhooks([[
+            name: 'eTranzact MSTeams',
+            startNotification: true,
+            notifySuccess: true,
+            notifyAborted: true,
+            notifyFailure: true,
+            url: "${Build_Alerts_WebHook_URL}"
+            //url: 'https://etranzactgh.webhook.office.com/webhookb2/5e7a4893-4699-46aa-ae0d-53b00a717c71@3d685e69-4250-4b93-8a79-790efcd4e72a/JenkinsCI/b4123683cdc74d16b1aede5a5cc1812e/770e1f69-9158-403e-91aa-6469968cc96e'
+        ]])
+    }
+
+    environment {
+        TAG = "${env.BUILD_NUMBER}"
+        IMAGE = "gh-hello-node"
+    }
+
+
+    stages{
+
+        // Checkout Code From GitHub
+        // stage("CheckOut"){
+        //     steps{
+        //         script{
+        //             checkout scm
+        //         }
+        //     }
+        // }
+
+   //     // Run Static Code Analysis
+    //     stage('Code Quality Checks') {
+    //         steps {
+    //             // script {
+    //             //     // Use the appropriate command to analyze code quality
+    //             //     sh 'mvn sonar:sonar' // Example for Maven-based projects with SonarQube
+    //             // }
+    //             echo "${Build_Alerts_WebHook_URL}"
+    //             withSonarQubeEnv(credentialsId: "${SonarQube_Credentials_ID}", installationName: "${SonarQube_Server_Name}") {
+    //                 sh 'mvn clean package -DskipTests=true sonar:sonar'
+    //             }
+    //     }
+
+    // }
+
+
+        // Build Code Into Deployable Artifact
+        stage("Build Artifact & Run Unit Test Cases"){
+            steps{
+                script{
+                    sh"""
+                        npm install
+                    """
+                }
+            }
+        }
+
+
+        // Package Deployable Artifact & Publish To ECR Storage Repository
+        stage ('Package & Publish') {
+            steps{
+
+                script{
+                    app = docker.build("$IMAGE:$TAG")
+                    sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${AWS_Account_URL}'
+                    docker.withRegistry("${ECR_Repository_URL}/gh-hello-node") {
+                    // docker.withRegistry("https://842092678711.dkr.ecr.eu-west-1.amazonaws.com/gh-terra-name-match-service"){
+                    app.push("$TAG")
+                    }
+                }
+                }
+        }
+    }
+
+
+
+    // post{
+    //     always{
+    //         echo "========always========"
+    //     }
+    //     success{
+    //         script {
+    //             sh 'echo success'
+    //         }
+    //     }
+    //     failure{
+    //         script {
+    //             sh 'echo Failed'
+    //         }
+    //     }
+    // }
+
+}
