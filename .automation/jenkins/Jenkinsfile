@@ -48,7 +48,7 @@ pipeline{
                 // }
                 // def sonarScanner = tool name: "${SonarQube_Server_Name}"
                 def scannerHome = tool 'sonarscan';
-                withSonarQubeEnv('eTranzact GH Sonarqube Server', envOnly: true) {
+                withSonarQubeEnv('eTranzact GH Sonarqube Server') {
                     echo "${env.SONAR_HOST_URL}"
                     sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${IMAGE} -Dsonar.projectName=${IMAGE} -Dsonar.host.url=${SonarQube_Server_URL}"
                 }
