@@ -51,7 +51,7 @@ pipeline{
                 // }
                 withSonarQubeEnv(credentialsId: "90a6e687-5032-457b-af91-e6d456182d42", installationName: "eTranzact GH Sonarqube Server") {
                     // sh 'mvn clean package -DskipTests=true sonar:sonar'
-                    sh 'sh '${SCANNER_HOME}/bin/sonar-scanner -sonar:sonar'
+                    sh '${SCANNER_HOME}/bin/sonar-scanner -sonar:sonar'
                 }
         }
 
