@@ -42,16 +42,14 @@ pipeline{
                 //     // Use the appropriate command to analyze code quality
                 //     sh 'mvn sonar:sonar' // Example for Maven-based projects with SonarQube
                 // }
-                environment {
-                SCANNER_HOME = tool 'eTranzact GH Sonarqube Server';    
-                }
                 
                 // withSonarQubeEnv(credentialsId: "${SonarQube_Credentials_ID}", installationName: "${SonarQube_Server_Name}") {
                 //     sh 'mvn clean package -DskipTests=true sonar:sonar'
                 // }
+                def sonarScanner = tool name: 'SonarQube', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                 withSonarQubeEnv(credentialsId: "90a6e687-5032-457b-af91-e6d456182d42", installationName: "eTranzact GH Sonarqube Server") {
                     // sh 'mvn clean package -DskipTests=true sonar:sonar'
-                    sh '${SCANNER_HOME}/bin/sonar-scanner -sonar:sonar'
+                    sh '${SCANNER_HOME}/bin/sonar-scanner'
                 }
         }
 
