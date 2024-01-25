@@ -7,15 +7,15 @@ pipeline{
         timestamps()
         timeout(time:20, unit:'MINUTES')
 
-        office365ConnectorWebhooks([[
-            name: 'eTranzact MSTeams',
-            startNotification: true,
-            notifySuccess: true,
-            notifyAborted: true,
-            notifyFailure: true,
-            url: "${Build_Alerts_WebHook_URL}"
-            //url: 'https://etranzactgh.webhook.office.com/webhookb2/5e7a4893-4699-46aa-ae0d-53b00a717c71@3d685e69-4250-4b93-8a79-790efcd4e72a/JenkinsCI/b4123683cdc74d16b1aede5a5cc1812e/770e1f69-9158-403e-91aa-6469968cc96e'
-        ]])
+        // office365ConnectorWebhooks([[
+        //     name: 'eTranzact MSTeams',
+        //     startNotification: true,
+        //     notifySuccess: true,
+        //     notifyAborted: true,
+        //     notifyFailure: true,
+        //     url: "${Build_Alerts_WebHook_URL}"
+        //     //url: 'https://etranzactgh.webhook.office.com/webhookb2/5e7a4893-4699-46aa-ae0d-53b00a717c71@3d685e69-4250-4b93-8a79-790efcd4e72a/JenkinsCI/b4123683cdc74d16b1aede5a5cc1812e/770e1f69-9158-403e-91aa-6469968cc96e'
+        // ]])
     }
 
     environment {
@@ -46,10 +46,11 @@ pipeline{
                 // withSonarQubeEnv(credentialsId: "${SonarQube_Credentials_ID}", installationName: "${SonarQube_Server_Name}") {
                 //     sh 'mvn clean package -DskipTests=true sonar:sonar'
                 // }
-                def sonarScanner = tool name: "${SonarQube_Server_Name}"
+                // def sonarScanner = tool name: "${SonarQube_Server_Name}"
+                def scannerHome = tool 'sonarscan';
                 withSonarQubeEnv(credentialsId: "${SonarQube_Credentials_ID}", installationName: "${SonarQube_Server_Name}") {
                     // sh 'mvn clean package -DskipTests=true sonar:sonar'
-                    sh '${sonarScanner}/bin/sonar-scanner'
+                    sh "${tool("sonarscan ")}/bin/sonar-scanner -Dsonar.projectKey=reactapp -Dsonar.projectName=reactapp"
                 }
             }
         }
