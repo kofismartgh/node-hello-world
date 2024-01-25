@@ -46,7 +46,7 @@ pipeline{
                 // withSonarQubeEnv(credentialsId: "${SonarQube_Credentials_ID}", installationName: "${SonarQube_Server_Name}") {
                 //     sh 'mvn clean package -DskipTests=true sonar:sonar'
                 // }
-                def sonarScanner = tool name: 'eTranzact GH Sonarqube Server'
+                def sonarScanner = tool name: 'SOnar Scanner 5.0.1.3006'
                 withSonarQubeEnv(credentialsId: "${SonarQube_Credentials_ID}", installationName: "${SonarQube_Server_Name}") {
                     // sh 'mvn clean package -DskipTests=true sonar:sonar'
                     sh '${sonarScanner}/bin/sonar-scanner'
