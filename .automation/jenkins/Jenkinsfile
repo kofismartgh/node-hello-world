@@ -55,14 +55,9 @@ pipeline{
         stage("Build Artifact & Run Unit Test Cases"){
             steps{
                 script{
-                    def node_version = sh(script: "node -p \"require('./package.json').version\"", returnStdout: true).trim()
-                    echo " printing nodeversion ${node_version}"
-                     def packageJSON = readJSON file: 'package.json'
-                     def packageJSONVersion = packageJSON.version
                     sh"""
                         npm install
                     """
-                    echo "printing packagejson ${packageJSONVersion}"
                 }
             }
         }
@@ -74,7 +69,7 @@ pipeline{
 
                 script{
                     def packageJSON = readJSON file: 'package.json'
-                    def packageJSONVersion = packageJSON.version
+                    def packageJSONVersion = packageJSON.version //to get the app version number
                     APP_TAG = "${packageJSONVersion}-${env.BUILD_NUMBER}"
                     app = docker.build("$IMAGE:$APP_TAG")
                     sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${AWS_Account_URL}'
