@@ -38,7 +38,7 @@ pipeline{
    //     // Run Static Code Analysis
         stage('Code Quality Checks') {
             steps {
-                // script {
+                script {
                 //     // Use the appropriate command to analyze code quality
                 //     sh 'mvn sonar:sonar' // Example for Maven-based projects with SonarQube
                 // }
@@ -46,10 +46,10 @@ pipeline{
                 // withSonarQubeEnv(credentialsId: "${SonarQube_Credentials_ID}", installationName: "${SonarQube_Server_Name}") {
                 //     sh 'mvn clean package -DskipTests=true sonar:sonar'
                 // }
-                def sonarScanner = tool name: 'eTranzact GH Sonarqube Server', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                def sonarScanner = tool name: 'eTranzact GH Sonarqube Server'
                 withSonarQubeEnv(credentialsId: "${SonarQube_Credentials_ID}", installationName: "${SonarQube_Server_Name}") {
                     // sh 'mvn clean package -DskipTests=true sonar:sonar'
-                    sh '${SCANNER_HOME}/bin/sonar-scanner'
+                    sh '${sonarScanner}/bin/sonar-scanner'
                 }
         }
 
