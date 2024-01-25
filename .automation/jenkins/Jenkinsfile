@@ -68,7 +68,7 @@ pipeline{
         }
 
 
-        Package Deployable Artifact & Publish To ECR Storage Repository
+        //Package Deployable Artifact & Publish To ECR Storage Repository
         stage ('Package & Publish') {
             steps{
 
