@@ -51,6 +51,7 @@ pipeline{
                     // sh 'mvn clean package -DskipTests=true sonar:sonar'
                     sh '${sonarScanner}/bin/sonar-scanner'
                 }
+            }
         }
 
     }
