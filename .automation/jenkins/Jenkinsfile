@@ -49,8 +49,7 @@ pipeline{
                 // def sonarScanner = tool name: "${SonarQube_Server_Name}"
                 def scannerHome = tool 'sonarscan';
                 withSonarQubeEnv('eTranzact GH Sonarqube Server') {
-                    // sh 'mvn clean package -DskipTests=true sonar:sonar'
-                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=reactapp -Dsonar.projectName=reactapp -Dsonar.host.url=http://52.209.111.71:5000"
+                    sh "${scannerHome}/bin/sonar-scanner sonar:sonar"
                 }
             }
         }
