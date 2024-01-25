@@ -70,12 +70,12 @@ pipeline{
             steps{
 
                 script{
-                    echo "$node_version"
-                    app = docker.build("$IMAGE:$TAG")
+                    APP_TAG = "${node_version}-${env.BUILD_NUMBER}"
+                    app = docker.build("$IMAGE:$APP_TAG")
                     sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${AWS_Account_URL}'
                     docker.withRegistry("${ECR_Repository_URL}/gh-hello-node") {
                     // docker.withRegistry("https://842092678711.dkr.ecr.eu-west-1.amazonaws.com/gh-terra-name-match-service"){
-                    app.push("$TAG")
+                    app.push("$APP_TAG")
                     }
                 }
                 }
