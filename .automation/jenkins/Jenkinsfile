@@ -48,7 +48,7 @@ pipeline{
                 // }
                 // def sonarScanner = tool name: "${SonarQube_Server_Name}"
                 def scannerHome = tool 'sonarscan';
-                withSonarQubeEnv(credentialsId: "${SonarQube_Credentials_ID}", installationName: 'sonarscan') {
+                withSonarQubeEnv('sonarscan') {
                     // sh 'mvn clean package -DskipTests=true sonar:sonar'
                     sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=reactapp -Dsonar.projectName=reactapp -Dsonar.host.url=http://52.209.111.71:5000"
                 }
