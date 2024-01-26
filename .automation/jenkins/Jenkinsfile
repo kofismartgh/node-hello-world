@@ -39,18 +39,9 @@ pipeline{
         stage('Code Quality Checks') {
             steps {
                 script {
-                //     // Use the appropriate command to analyze code quality
-                //     sh 'mvn sonar:sonar' // Example for Maven-based projects with SonarQube
-                // }
-                
-                // withSonarQubeEnv(credentialsId: "${SonarQube_Credentials_ID}", installationName: "${SonarQube_Server_Name}") {
-                //     sh 'mvn clean package -DskipTests=true sonar:sonar'
-                // }
-                // def sonarScanner = tool name: "${SonarQube_Server_Name}"
-                def scannerHome = tool 'sonarscan';
-                withSonarQubeEnv('eTranzact GH Sonarqube Server') {
-                    echo "${env.SONAR_HOST_URL}"
-                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${IMAGE} -Dsonar.projectName=${IMAGE} -Dsonar.host.url=${SonarQube_Server_URL}"
+                def scannerHome = tool 'sonarscan'; // sonar-scanner is the name of the tool in the manage jenkins> tool configuration
+                withSonarQubeEnv('eTranzact GH Sonarqube Server') { //installationName is the name of sonar installation in manage jenkins>configure system
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${IMAGE} -Dsonar.projectName=${IMAGE} -Dsonar.host.url=${env.SONAR_HOST_URL}"
                 }
             }
         }
@@ -72,17 +63,51 @@ pipeline{
 
         //Package Deployable Artifact & Publish To ECR Storage Repository
         stage ('Package & Publish') {
+            when{
+                anyOf {
+                    branch 'develop'
+                    expression {
+                        return env.BRANCH_NAME.startsWith('release/')
+                    }
+                }
+            }
             steps{
 
                 script{
                     def packageJSON = readJSON file: 'package.json'
                     def packageJSONVersion = packageJSON.version //to get the app version number
-                    APP_TAG = "${packageJSONVersion}-${env.BUILD_NUMBER}"
-                    app = docker.build("$IMAGE:$APP_TAG")
+                    // APP_TAG = "${packageJSONVersion}-${env.BUILD_NUMBER}"
+                    // app = docker.build("$IMAGE:$APP_TAG")
                     sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin ${AWS_Account_URL}'
-                    docker.withRegistry("${ECR_Repository_URL}/gh-hello-node") {
+                    // docker.withRegistry("${ECR_Repository_URL}/gh-hello-node") {
+                    // // docker.withRegistry("https://842092678711.dkr.ecr.eu-west-1.amazonaws.com/gh-terra-name-match-service"){
+                    // app.push("$APP_TAG")
+
+                    if (env.BRANCH_NAME == 'develop') {
+
+                        APP_TAG = "Dev-${packageJSONVersion}-${env.BUILD_NUMBER}"
+
+                        echo "Building Docker Image From Develop ${APP_TAG}"
+                        app = docker.build("$IMAGE:$APP_TAG")
+                    }
+
+                    else {
+
+                        APP_TAG = "Release-${packageJSONVersion}-${env.BUILD_NUMBER}"
+
+                        echo "Building Docker Image From Develop ${APP_TAG}"
+                        app = docker.build("$IMAGE:$APP_TAG")
+                    }
+                    
+                    docker.withRegistry("${ECR_Repository_URL}/${IMAGE}") {
                     // docker.withRegistry("https://842092678711.dkr.ecr.eu-west-1.amazonaws.com/gh-terra-name-match-service"){
                     app.push("$APP_TAG")
+
+
+
+
+
+
                     }
                 }
                 }
