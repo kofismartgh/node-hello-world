@@ -36,7 +36,7 @@ pipeline{
         // }
 
    //     // Run Static Code Analysis
-        stage('Code Quality Checks') {
+        stage('Code Scan Checks') {
             steps {
                 script {
                 def scannerHome = tool 'sonarscaner'; // sonar-scanner is the name of the tool in the manage jenkins> tool configuration
@@ -47,6 +47,11 @@ pipeline{
         }
 
     }
+
+        stage("Quality gate") {
+                steps {
+                    waitForQualityGate abortPipeline: true
+                }
 
 
 
