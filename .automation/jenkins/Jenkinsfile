@@ -64,16 +64,16 @@ pipeline {
 
 
 
-    // Build Code Into Deployable Artifact
-    stage("Build Artifact & Run Unit Test Cases") {
-        steps {
-            script{
-                sh"""
-                npm install
-                """
-            }
-        }
-    }
+    // // Build Code Into Deployable Artifact
+    // stage("Build Artifact & Run Unit Test Cases") {
+    //     steps {
+    //         script{
+    //             sh"""
+    //             npm install
+    //             """
+    //         }
+    //     }
+    // }
 
 
     //Package Deployable Artifact & Publish To ECR Storage Repository
