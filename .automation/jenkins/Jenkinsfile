@@ -65,33 +65,32 @@ pipeline {
 
 
     // // Build Code Into Deployable Artifact
-    stage("Build Artifact & Run Unit Test Cases") {
-        steps {
-            script{
-                sh"""
-                npm install
-                """
-                dockerImage = docker.build("soloetzgh/agronode:${env.BUILD_NUMBER}")
-                withDockerRegistry([ credentialsId: "soloetzgh_dockerhub", url: "" ]) {
-                    dockerImage.push("${env.BUILD_NUMBER}")
-                sh 'docker image ls'
+        stage("Build Artifact & Run Unit Test Cases") {
+            steps {
+                script{
+                    sh"""
+                    npm install
+                    """
+                    dockerImage = docker.build("soloetzgh/agronode:${env.BUILD_NUMBER}")
+                    withDockerRegistry([ credentialsId: "soloetzgh_dockerhub", url: "" ]) {
+                        dockerImage.push("${env.BUILD_NUMBER}")
+                    sh 'docker image ls'
+                    }
+
+                    
                 }
-
-                
             }
         }
-    }
 
 
-stage("Trigger ManifestUpdate") {
-        steps {
-            script{
-                echo "triggering updatemanifestjob"
-                build job: 'agro_manifest', parameters: [string(name: 'IMAGETAG', value: "${env.BUILD_NUMBER}")]               
-                } 
-            }
-        }
-    }
+        stage("Trigger ManifestUpdate") {
+                steps {
+                    script{
+                        echo "triggering updatemanifestjob"
+                        build job: 'agro_manifest', parameters: [string(name: 'IMAGETAG', value: "${env.BUILD_NUMBER}")]               
+                        } 
+                    }
+                }
 
     //Package Deployable Artifact & Publish To ECR Storage Repository
     // stage ('Package & Publish') {
