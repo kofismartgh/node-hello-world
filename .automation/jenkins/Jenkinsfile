@@ -73,8 +73,9 @@ pipeline {
                 """
                 dockerImage = docker.build("soloetzgh/agronode:latest")
                 withDockerRegistry([ credentialsId: "soloetzgh_dockerhub", url: "" ]) {
-                    dockerImage.push("latest")
+                    dockerImage.push("${env.BUILD_NUMBER}")
                 sh 'docker images ls'
+                sh 'docker image ls'
                 }
 
                 
