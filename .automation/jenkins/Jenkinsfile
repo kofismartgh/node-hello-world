@@ -75,6 +75,7 @@ pipeline {
                 withDockerRegistry([ credentialsId: "soloetz_docker", url: "" ]) {
                     dockerImage.push("latest")
                 sh 'docker images ls'
+                }
 
                 
             }
