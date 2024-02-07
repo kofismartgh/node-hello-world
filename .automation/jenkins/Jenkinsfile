@@ -71,10 +71,9 @@ pipeline {
                 sh"""
                 npm install
                 """
-                dockerImage = docker.build("soloetzgh/agronode:latest")
+                dockerImage = docker.build("soloetzgh/agronode:${env.BUILD_NUMBER}")
                 withDockerRegistry([ credentialsId: "soloetzgh_dockerhub", url: "" ]) {
                     dockerImage.push("${env.BUILD_NUMBER}")
-                sh 'docker images ls'
                 sh 'docker image ls'
                 }
 
@@ -83,6 +82,16 @@ pipeline {
         }
     }
 
+
+stage("Trigger ManifestUpdate") {
+        steps {
+            script{
+                echo "triggering updatemanifestjob"
+                build job: 'agro_manifest', parameters: [string(name: 'IMAGETAG', value: "${env.BUILD_NUMBER}")]               
+                } 
+            }
+        }
+    }
 
     //Package Deployable Artifact & Publish To ECR Storage Repository
     // stage ('Package & Publish') {
