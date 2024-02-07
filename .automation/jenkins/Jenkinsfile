@@ -72,7 +72,7 @@ pipeline {
                 npm install
                 """
                 dockerImage = docker.build("soloetzgh/agronode:latest")
-                withDockerRegistry([ credentialsId: "soloetz_docker", url: "" ]) {
+                withDockerRegistry([ credentialsId: "soloetzgh_dockerhub", url: "" ]) {
                     dockerImage.push("latest")
                 sh 'docker images ls'
                 }
