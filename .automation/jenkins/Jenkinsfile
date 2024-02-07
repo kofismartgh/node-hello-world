@@ -47,7 +47,7 @@ pipeline {
             }
         }
 
-    }
+    
 
     // stage("Quality gate") {
     //         steps {
@@ -65,15 +65,18 @@ pipeline {
 
 
     // // Build Code Into Deployable Artifact
-    // stage("Build Artifact & Run Unit Test Cases") {
-    //     steps {
-    //         script{
-    //             sh"""
-    //             npm install
-    //             """
-    //         }
-    //     }
-    // }
+    stage("Build Artifact & Run Unit Test Cases") {
+        steps {
+            script{
+                sh"""
+                npm install
+                """
+                dockerImage = docker.build("soloetzgh/agronode:latest")
+
+                
+            }
+        }
+    }
 
 
     //Package Deployable Artifact & Publish To ECR Storage Repository
@@ -121,4 +124,5 @@ pipeline {
     //         }
     //     }
     // }
+    }
 }
