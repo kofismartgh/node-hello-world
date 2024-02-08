@@ -89,7 +89,9 @@ pipeline {
                         echo "triggering updatemanifestjob"
                         BUILD_TRIGGER_BY_NAME = currentBuild.getBuildCauses()[0].shortDescription
                         echo "BUILD_TRIGGER_BY_NAME: ${BUILD_TRIGGER_BY_NAME}"
-                        build job: 'agro_manifest', parameters: [string(name: 'IMAGETAG', value: "${env.BUILD_NUMBER}"),string(name: 'BUILD_TRIGGER_BY_NAME', value: 'JenkinsUser')]               
+                        BUILD_TRIGGER_BY_USER = currentBuild.getBuildCauses()[0].userId
+                        echo "BUILD_TRIGGER_BY_USER: ${BUILD_TRIGGER_BY_USER}"
+                        build job: 'agro_manifest', parameters: [string(name: 'IMAGETAG', value: "${env.BUILD_NUMBER}"),string(name: 'BUILD_TRIGGER_BY_NAME', value: "${BUILD_TRIGGER_BY_NAME}")]               
                         } 
                     }
                 }
