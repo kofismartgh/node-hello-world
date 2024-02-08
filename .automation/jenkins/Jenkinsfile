@@ -86,7 +86,7 @@ pipeline {
         stage("Trigger ManifestUpdate") {
                 steps {
                     script{
-                        echo "triggering updatemanifestjob"
+                        echo "triggering updatemanifestfilejob"
                         BUILD_TRIGGER_BY_NAME = currentBuild.getBuildCauses()[0].shortDescription
                         echo "BUILD_TRIGGER_BY_NAME: ${BUILD_TRIGGER_BY_NAME}"
                         BUILD_TRIGGER_BY_USER = currentBuild.getBuildCauses()[0].userId
