@@ -68,9 +68,9 @@ pipeline {
         stage("Build Artifact & Run Unit Test Cases") {
             steps {
                 script{
-                    sh"""
-                    npm install elastic-apm-node --save
-                    """
+                    //sh"""
+                    //npm install elastic-apm-node --save
+                    //"""
                     dockerImage = docker.build("soloetzgh/agronode:${env.BUILD_NUMBER}")
                     withDockerRegistry([ credentialsId: "soloetzgh_dockerhub", url: "" ]) {
                         dockerImage.push("${env.BUILD_NUMBER}")
