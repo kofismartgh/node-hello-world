@@ -69,7 +69,7 @@ pipeline {
             steps {
                 script{
                     sh"""
-                    npm install
+                    npm install elastic-apm-node --save
                     """
                     dockerImage = docker.build("soloetzgh/agronode:${env.BUILD_NUMBER}")
                     withDockerRegistry([ credentialsId: "soloetzgh_dockerhub", url: "" ]) {
@@ -83,18 +83,18 @@ pipeline {
         }
 
 
-        stage("Trigger ManifestUpdate") {
-                steps {
-                    script{
-                        echo "triggering updatemanifestfilejob"
-                        BUILD_TRIGGER_BY = currentBuild.getBuildCauses()[0].shortDescription
-                        echo "BUILD_TRIGGER_BY: ${BUILD_TRIGGER_BY}"
-                        BUILD_TRIGGER_BY_USER = currentBuild.getBuildCauses()[0].userId
-                        echo "BUILD_TRIGGER_BY_USER: ${BUILD_TRIGGER_BY}"
-                        build job: 'agro_manifest', parameters: [string(name: 'IMAGETAG', value: "${env.BUILD_NUMBER}"),string(name: 'BUILD_TRIGGER_BY', value: "${BUILD_TRIGGER_BY}")]               
-                        } 
-                    }
-                }
+        // stage("Trigger ManifestUpdate") {
+        //         steps {
+        //             script{
+        //                 echo "triggering updatemanifestfilejob"
+        //                 BUILD_TRIGGER_BY = currentBuild.getBuildCauses()[0].shortDescription
+        //                 echo "BUILD_TRIGGER_BY: ${BUILD_TRIGGER_BY}"
+        //                 BUILD_TRIGGER_BY_USER = currentBuild.getBuildCauses()[0].userId
+        //                 echo "BUILD_TRIGGER_BY_USER: ${BUILD_TRIGGER_BY}"
+        //                 build job: 'agro_manifest', parameters: [string(name: 'IMAGETAG', value: "${env.BUILD_NUMBER}"),string(name: 'BUILD_TRIGGER_BY', value: "${BUILD_TRIGGER_BY}")]               
+        //                 } 
+        //             }
+        //         }
 
     //Package Deployable Artifact & Publish To ECR Storage Repository
     // stage ('Package & Publish') {
